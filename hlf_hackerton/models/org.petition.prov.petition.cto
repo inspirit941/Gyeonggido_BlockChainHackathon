@@ -1,0 +1,77 @@
+
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * Write your model definitions here
+ */
+
+namespace org.petition.prov.petition
+
+import org.petition.prov.participants.Civil // 참여자 중 civil의 속성을 그대로 받아옴.
+
+asset Petition identified by PetitionId{
+  o String PetitionId
+  o Civil Civil
+  o String title optional // 필요하다면 민원 제목은 여기에 넣는 걸 생각함. v0.1
+}
+
+// participant Department identified by DepartmentId {
+//   o String DepartmentId
+//   o String DepartmentName
+//   // o String lastName
+// }
+
+// participant Civil identified by CivilId{
+//   o String CivilId
+//   o String[] Petitionlist // 그 시민이 제기한 민원의 id를 넣는 list v0.1. 근데 구조상 어떻게 필요해지는 건지 아직 감이 안옴
+//   o CivilDetail CivilDetail // 민원 제기한 시민의 정보를 넣는 란. optional로 선언해야 하는지 고민중 v0.1
+// }
+
+// concept CivilDetail {
+//   o String Name
+//   // o String LName
+//   o String email
+// }
+
+// participant BusAssociation identified by BusAssociationId{
+//   o String BusAssociationId
+
+// }
+
+
+// Sample에서 만들었던 파일들.
+
+// participant SampleParticipant identified by participantId {
+//   o String participantId
+//   o String firstName
+//   o String lastName
+// }
+
+// asset SampleAsset identified by assetId {
+//   o String assetId
+//   --> SampleParticipant owner
+//   o String value
+// }
+
+// transaction SampleTransaction {
+//   --> SampleAsset asset
+//   o String newValue
+// }
+
+// event SampleEvent {
+//   --> SampleAsset asset
+//   o String oldValue
+//   o String newValue
+// }
