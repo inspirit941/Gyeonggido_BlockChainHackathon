@@ -23,9 +23,27 @@ import org.petition.prov.participants.Civil // 참여자 중 civil의 속성을 
 
 asset Petition identified by PetitionId{
   o String PetitionId
-  o Civil Civil
+  o String CivilId
+  o String Content
   o String title optional // 필요하다면 민원 제목은 여기에 넣는 걸 생각함. v0.1
 }
+
+transaction CreatePetition{
+  // o String PetitionId 이건 input값으로 받을 게 아니라, tx 결과로 asset이 생성됐을 때 event로 알려주는 게 적절할 거 같다.
+  o String CivilId
+  o String Content
+  o String title optional // 필요하다면 민원 제목은 여기에 넣는 걸 생각함. v0.1
+  o DateTime uploadDate
+}
+
+
+transaction ModifyPetition {
+  --> Petition asset
+  o String Content  // 민원ID나 민원 제공자는 바꿀 필요가 없다고 봤음.
+  o String title optional // 필요하다면 민원 제목은 여기에 넣는 걸 생각함. v0.1
+}
+
+
 
 // participant Department identified by DepartmentId {
 //   o String DepartmentId
@@ -65,10 +83,6 @@ asset Petition identified by PetitionId{
 //   o String value
 // }
 
-// transaction SampleTransaction {
-//   --> SampleAsset asset
-//   o String newValue
-// }
 
 // event SampleEvent {
 //   --> SampleAsset asset

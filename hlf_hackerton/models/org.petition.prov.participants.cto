@@ -20,7 +20,7 @@
 
 namespace org.petition.prov.participants
 
-abstract participant PetitionDepartment identified by particiapantKey {
+participant PetitionDepartment identified by particiapantKey {
   o String particiapantKey // 고유 번호
   o DepartmentDetail DepartmentDetail // 부처 detail은 따로 설정
   o GovernEmployee GovernEmployee optional// 부처 담당자. 현재는 실행의 편의를 위해 optional로 설정함.
@@ -61,26 +61,26 @@ participant BusAssociation identified by BusAssociationId{
 
 // Sample에서 만들었던 파일들.
 
-// participant SampleParticipant identified by participantId {
-//   o String participantId
-//   o String firstName
-//   o String lastName
-// }
+participant SampleParticipant identified by participantId {
+  o String participantId
+  o String firstName
+  o String lastName
+}
 
-// asset SampleAsset identified by assetId {
-//   o String assetId
-//   --> SampleParticipant owner
-//   o String value
-// }
+asset SampleAsset identified by assetId {
+  o String assetId
+  --> SampleParticipant owner
+  o String value
+}
 
-// transaction SampleTransaction {
-//   --> SampleAsset asset
-//   o String newValue
-// }
+transaction SampleTransaction {
+  --> SampleAsset asset
+  o String newValue
+}
 
-// event SampleEvent {
-//   --> SampleAsset asset
-//   o String oldValue
-//   o String newValue
-// }
+event SampleEvent {
+  --> SampleAsset asset
+  o String oldValue
+  o String newValue
+}
 
