@@ -23,16 +23,25 @@ import org.petition.prov.participants.Civil // 참여자 중 civil의 속성을 
 
 asset Petition identified by PetitionId{
   o String PetitionId
-  o String CivilId
-  o String Content
+  o Civil Civil // 민원 제기한 사람 정보를 입력하는 창.
+  // o String CivilId
   o String title optional // 필요하다면 민원 제목은 여기에 넣는 걸 생각함. v0.1
+  o String Content
+  o Resolved Resolved default = "FALSE"
+  
+}
+
+enum Resolved { // 민원 해결 여부
+  o TRUE
+  o FALSE
 }
 
 transaction CreatePetition{
   // o String PetitionId 이건 input값으로 받을 게 아니라, tx 결과로 asset이 생성됐을 때 event로 알려주는 게 적절할 거 같다.
-  o String CivilId
-  o String Content
+  o Civil Civil
   o String title optional // 필요하다면 민원 제목은 여기에 넣는 걸 생각함. v0.1
+  o String Content
+  
   o DateTime uploadDate
 }
 
