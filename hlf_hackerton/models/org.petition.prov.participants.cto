@@ -20,39 +20,53 @@
 
 namespace org.petition.prov.participants
 
-
-
-participant PetitionDepartment identified by particiapantKey {
-  o String particiapantKey // 고유 번호
-  o DepartmentDetail DepartmentDetail // 부처 detail은 따로 설정
-  o GovernEmployee GovernEmployee optional// 부처 담당자. 현재는 실행의 편의를 위해 optional로 설정함.
-  // o String lastName
-}
-concept DepartmentDetail {
-  o String Province // 무슨 시? 인지
-  o String DepartmentName // 부서 이름
-  // 기타 추가사항이 뭐 있을까
-}
-// 부서별로 더 크게 나누어야 하나?
-
-
-concept GovernEmployee{
-  // 추가 필요.
+participant headquarter identified by Province{
+  o String Province // 경기도청. 이 participant에는 admin 권한에 필적하는 걸 줄 생각.
 }
 
+participant PetitionDepartment identified by ParticiapantKey extends headquarter{
+  o String ParticiapantKey // 고유 번호
+  o String DepartmentName default = '교통행정과' // 부서 이름
+  --> headquarter headquarter //경기도의 Relation으로 편입해야 할까?
+
+}
+participant GovernEmployee identified by Employeeid {
+  o String Employeeid // 고유번호. 이름을 쓰려 했는데 동명이인이 있을 수 있다고 생각함.
+  --> PetitionDepartment PetitionDepartment
+}
 
 participant Civil identified by CivilId{
   o String CivilId
-  o String[] Petitionlist optional// 그 시민이 제기한 민원의 id를 넣는 list v0.1. 근데 처음 선언할 때는 optional값이어야 할 거 같은데 ... 흠
-  o CivilDetail CivilDetail // 민원 제기한 시민의 정보를 넣는 란. optional로 선언해야 하는지 고민중 v0.1
+  // o String[] Petitionlist optional// 시민이 제기한 민원 id를 list로 넣는 값. 처음 civil이 만들어질 때는 값이 없으니 optional.
+  o CivilDetail CivilDetail // 
   
 }
 
+/* 경기도청에서 민원신청을 넣을 때 기입해야 하는 정보는
+연락처 - 유선전화, 휴대폰 둘 중 하나는 필수
+전자우편 - 필수
+주소 - 필수
+민원발생지역 -> 위의 주소와 동일한 지역인지 묻고, 시도 / 시군구 선택 가능
+진행상황 통지방식 -> 전자우편, 휴대폰문자메세지, 누리집 홈페이지 체크박스 제공
+민원답변 통지방식 -> 전자우편, 서면, 누리집 홈페이지 체크 가능.
+나의민원 확인방식 - 필수. 로그인만으로 확인하는 간편형, 로그인 -> 신청번호 입력해 확인받는 2단계
+
+위 정보를 다 입력하면 
+'민원내용을 잘 나타낼 수 있는 제목'
+내용 - '교통법규 위반은 경찰청 스마트 국민제보 앱, 주정차 위반은 행안부 생활불편신고 앱으로 신고하면 보다 빠른 신속히 처리됨', '증빙장소에 촬영시가니 없는 경우 과태로 부과처리가 되지 않을 수 있음'이 언급됨.
+첨부파일 -> 최대 5개
+
+피신고자 정보 - 이름(개인,기업,단체) , 근무처(상호명), 주소, 연락처 기재
+민원 공유여부 동의 묻기.
+*/
+
+
+
 concept CivilDetail {
-  o String Name
-  // o String LName
-  o String email
+  o String Name regex=/[가-힣][가-힣][가-힣]([가-힣])?/ //이름은 세 글자 또는 네 글자로.
+  o String email regex=/\w+@\w+.\w+/
   // 여기에 주소 등 기타 개인정보도 넣어야 하는지?
+  o String PhoneNumber optional // 핸드폰 번호는 option.
 }
 
 transaction CreateCivil{
@@ -61,9 +75,22 @@ transaction CreateCivil{
 }
 
 participant BusAssociation identified by BusAssociationId{
-  o String BusAssociationId 
-  o String BusAssociationName //버스 운송조합 이름.
+  o String BusAssociationId  // 버스운송조합 고유번호
+  o String BusAssociationName // 버스운송조합이름
+}
 
+participant BusCompany identified by BusCompanyNumber {
+  o String BusCompanyNumber regex=/031-(\d{3}|\d{4})-\d{4}/
+  // 사업자등록번호를 쓰려 했는데 경기도버스운송조합 홈페이지를 가보니 사업자번호가 없다. 회사 전화번호를 입력해야 할 듯
+  o String BusCompanyName // 버스회사 이름
+  o String[] BusRouteNumber // 회사가 소유한 버스 노선번호
+  --> BusAssociation BusAssociation // 소속된 버스운송조합.
+}
+
+participant BusDriver identified by DriverId{
+  o String DriverId
+  o String DriverName
+  --> BusCompany BusCompany
 }
 
 

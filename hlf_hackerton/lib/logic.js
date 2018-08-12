@@ -68,7 +68,6 @@ function    CreateCivil(CivilData) {
         });
 }
 
-
 /**
  * CreatePetition
  * @param {org.petition.prov.petition.CreatePetition} PetitionData
@@ -95,7 +94,7 @@ function    createPetition(PetitionData) {
             // Now add the Flight - global function getFactory() called
             var factory = getFactory();
 
-            var  NS =  'org.petition.prov.petition'; // Namespace
+            var NS =  'org.petition.prov.petition'; // Namespace
             var NS_participant = 'org.petition.prov.participants.Civil'
             
             // 현재 필요한 것.
@@ -114,11 +113,21 @@ function    createPetition(PetitionData) {
             
             petition.PetitionId = PetitionId;
             petition.Civil = PetitionData.Civil;
-            petition.Content = PetitionData.Content;
             petition.title = PetitionData.title;
-            
-            
+            petition.BusNumber = PetitionData.BusNumber;
+            petition.Time = PetitionData.Time;
+            petition.location = PetitionData.location;
+            petition.Content = PetitionData.Content;
+        //optional Data
+            petition.BusCompany = PetitionData.BusCompany;
+            petition.DriverName = PetitionData.DriverName;
         
+            // var civilpetitionlist = await getParticipantRegistry(petition.Civil);
+            // var updatelist = civilpetitionlist.Petitionlist.push(PetitionId);
+            // await civilpetitionlist.update(Petitionlist);
+            // 원래는 petitionlist에 append하려 했는데 생각해보니 이걸 굳이 할 필요가 없다.
+
+            
             // // Flight asset has an instance of the concept
             // // 2.2 Use the factory to create an instance of concept
             // var route = factory.newConcept(NS,"Route");
@@ -142,4 +151,28 @@ function    createPetition(PetitionData) {
         });
 }
 
-        
+   
+/**
+ * ResolvePetition
+ * @param {org.petition.prov.petition.ResolvePetition} InputData
+ * @transaction
+ * // 이 함수는 정부 관료만 불러올 수 있는 함수입니다.
+ */
+async function ResolvePetition(InputData) {
+
+    // input데이터에서 받은 petitionId로 해당 민원을 불러온다
+    let PetitionRegistry = await getAssetRegistry("org.petition.prov.petition.Petition#"+String(InputData.PetitionId));
+    
+    // 해당 민원을 해결 처리한다.
+    PetitionRegistry.Resolved = 'TRUE';
+
+    /*
+    if문으로 BusDriver id와 Buscompany id가 실제로 participant에 있는지 확인하는 함수가 필요
+    
+    이벤트를 통해 버스드라이버의 id와 버스회사의 id를 보여준다. (participant의 identity를 반환하는 함수가 있다면 더 좋을 거 같은데)
+    
+    */
+    await PetitionRegistry.update(PetitionRegistry.Resolved);
+
+    
+}
