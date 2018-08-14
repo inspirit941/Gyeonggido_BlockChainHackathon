@@ -19,7 +19,7 @@
 
 namespace org.petition.prov.petition
 
-import org.petition.prov.participants.Civil // 참여자 중 civil의 속성을 그대로 받아옴.
+import org.petition.prov.participants.* // 참여자 중 civil의 속성을 그대로 받아옴.
 
 asset Petition identified by PetitionId{
   o String PetitionId
@@ -58,13 +58,20 @@ transaction CreatePetition{
 
 
 transaction ModifyPetition {
+  --> Petition Petition
+  o String title optional
   o String Content  // 민원ID나 민원 제공자는 바꿀 필요가 없다고 봤음.
-  o String title optional // 필요하다면 민원 제목은 여기에 넣는 걸 생각함. v0.1
+  
+}
+
+transaction AcceptPetition{
+  --> Petition Petition
+  
 }
 
 // 민원이 해결되었다는 걸 알리는 transaction.
 transaction ResolvePetition {
-  o String PetitionId
+  --> Petition Petition
   o String BusCompanyNumber
   o String DriverId
   o String Employeeid

@@ -63,8 +63,8 @@ participant Civil identified by CivilId{
 
 
 concept CivilDetail {
-  o String Name regex=/[가-힣][가-힣][가-힣]([가-힣])?/ //이름은 세 글자 또는 네 글자로.
-  o String email regex=/\w+@\w+.\w+/
+  o String Name //regex=/[가-힣][가-힣][가-힣]([가-힣])?/ //이름은 세 글자 또는 네 글자로.
+  o String email //regex=/\w+@\w+.\w+/
   // 여기에 주소 등 기타 개인정보도 넣어야 하는지?
   o String PhoneNumber optional // 핸드폰 번호는 option.
 }
@@ -80,7 +80,7 @@ participant BusAssociation identified by BusAssociationId{
 }
 
 participant BusCompany identified by BusCompanyNumber {
-  o String BusCompanyNumber regex=/031-(\d{3}|\d{4})-\d{4}/
+  o String BusCompanyNumber //regex=/031-(\d{3}|\d{4})-\d{4}/
   // 사업자등록번호를 쓰려 했는데 경기도버스운송조합 홈페이지를 가보니 사업자번호가 없다. 회사 전화번호를 입력해야 할 듯
   o String BusCompanyName // 버스회사 이름
   o String[] BusRouteNumber // 회사가 소유한 버스 노선번호

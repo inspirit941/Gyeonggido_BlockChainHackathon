@@ -151,28 +151,61 @@ function    createPetition(PetitionData) {
         });
 }
 
+/**
+ * AcceptPetition
+ * @param {org.petition.prov.petition.ResolvePetition} InputData
+ * @transaction
+ * // 이 함수는 버스운송조합만 불러올 수 있는 함수입니다.
+ */
+function ResolvePetition(InputData) {
+    // 민원 전체 데이터를 불러온다
+    var Data;
+    return getAssetRegistry("org.petition.prov.petition.Petition")
+        .then(function(PetitionRegistry){
+            // 특정 민원id에 해당하는 값을 가져온다
+            return PetitionRegistry.get(InputData.Petition.PetitionId)
+                .then(function(PetitionData){
+                    // TRUE값으로 변경한다
+                    Data = PetitionData;
+                    Data.Resolved = "TRUE";
+                    // 변경한 값을 AssetRegistry에 다시 저장한다.
+                    return getAssetRegistry("org.petition.prov.petition.Petition")
+                    .then(function(UpDatedDataset){
+                        return UpDatedDataset.update(Data);
+                    })
+                });
+
+
+        // 여기 이벤트 삽입.
+        });
+};
    
 /**
  * ResolvePetition
  * @param {org.petition.prov.petition.ResolvePetition} InputData
  * @transaction
- * // 이 함수는 정부 관료만 불러올 수 있는 함수입니다.
+ * // 이 함수는 버스운송조합만 불러올 수 있는 함수입니다.
  */
-async function ResolvePetition(InputData) {
+function ResolvePetition(InputData) {
+    // 민원 전체 데이터를 불러온다
+    var Data;
+    return getAssetRegistry("org.petition.prov.petition.Petition")
+        .then(function(PetitionRegistry){
+            // 특정 민원id에 해당하는 값을 가져온다
+            return PetitionRegistry.get(InputData.Petition.PetitionId)
+                .then(function(PetitionData){
+                    // TRUE값으로 변경한다
+                    Data = PetitionData;
+                    Data.Resolved = "TRUE";
+                    // 변경한 값을 AssetRegistry에 다시 저장한다.
+                    return getAssetRegistry("org.petition.prov.petition.Petition")
+                    .then(function(UpDatedDataset){
+                        return UpDatedDataset.update(Data);
+                    })
+                });
 
-    // input데이터에서 받은 petitionId로 해당 민원을 불러온다
-    let PetitionRegistry = await getAssetRegistry("org.petition.prov.petition.Petition#"+String(InputData.PetitionId));
-    
-    // 해당 민원을 해결 처리한다.
-    PetitionRegistry.Resolved = 'TRUE';
 
-    /*
-    if문으로 BusDriver id와 Buscompany id가 실제로 participant에 있는지 확인하는 함수가 필요
+        // 여기 이벤트 삽입.
+        });
+};
     
-    이벤트를 통해 버스드라이버의 id와 버스회사의 id를 보여준다. (participant의 identity를 반환하는 함수가 있다면 더 좋을 거 같은데)
-    
-    */
-    await PetitionRegistry.update(PetitionRegistry.Resolved);
-
-    
-}
