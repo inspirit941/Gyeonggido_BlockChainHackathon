@@ -30,8 +30,8 @@ participant PetitionDepartment identified by ParticiapantKey extends headquarter
   --> headquarter headquarter //경기도의 Relation으로 편입해야 할까?
 
 }
-participant GovernEmployee identified by Employeeid {
-  o String Employeeid // 고유번호. 이름을 쓰려 했는데 동명이인이 있을 수 있다고 생각함.
+participant GovernEmployee identified by EmployeeId {
+  o String EmployeeId // 고유번호. 이름을 쓰려 했는데 동명이인이 있을 수 있다고 생각함.
   --> PetitionDepartment PetitionDepartment
 }
 
@@ -92,7 +92,8 @@ participant BusDriver identified by DriverId{
   o String DriverName
   --> BusCompany BusCompany
 }
-
+// 버스 + timestamp가 있으면 driver를 알 수 있다.
+// 투명하게 볼 수 있는 건 맞다.
 
 // Sample에서 만들었던 파일들.
 

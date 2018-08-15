@@ -67,67 +67,151 @@ function    CreateCivil(CivilData) {
             return CivilRegistry.add(Civil);
         });
 }
+function makeDate(){
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth()+1; //January is 0!
+    var yyyy = today.getFullYear();
 
+    if(dd<10) {
+        dd = '0'+dd
+    } 
+
+    if(mm<10) {
+        mm = '0'+mm
+    } 
+    var fulltoday = yyyy + '/' + mm + '/' +dd;
+    return fulltoday;
+}
 /**
- * CreatePetition
- * @param {org.petition.prov.petition.CreatePetition} PetitionData
+ * NonstopCreate
+ * @param {org.petition.prov.petition.NonstopCreate} PetitionData
  * @transaction
  */
-function    createPetition(PetitionData) {
-
-    /**
-     * 1. Validate the schedule data
-     * If the date is a past date then throw an error
-     */
-    // var timeNow = new Date().getTime();
-    // var schedTime = new Date(PetitionData.uploadDate).getTime();
-    // if(schedTime < timeNow){
-    //     throw new Error("Upload Datetime cannot be in the past!!!");
-    // }
-
-    // Get the Asset Registry
-
-    // return getAssetRegistry('org.acme.airline.flight.Flight')
+function NonstopCreate(PetitionData){
     return getAssetRegistry('org.petition.prov.petition.Petition')
         
-        .then(async function(PetitionRegistry){ //flightRegistry가 여깄었음
-            // Now add the Flight - global function getFactory() called
-            var factory = getFactory();
+    .then(function(PetitionRegistry){
+        var factory = getFactory();
+        var NS =  'org.petition.prov.petition'; // Namespace
+        var timeNow = PetitionData.timestamp;
+        var PetitionId = "1-"+String(PetitionData.Civil.CivilId)+'-'+String(timeNow); 
+        // 일단 민원 고유번호를 시민번호 + 시간으로 정함.
+        var petition = factory.newResource(NS,'Petition',PetitionId);
+        petition.PetitionId = PetitionId;
+        petition.Civil = PetitionData.Civil;
+        petition.location = PetitionData.location;
+        petition.BusStopName = PetitionData.BusStopName;
+        petition.BusNumber = PetitionData.BusNumber;
+        petition.VehicleId = PetitionData.VehicleId;
+        petition.Time = PetitionData.Time;
 
-            var NS =  'org.petition.prov.petition'; // Namespace
-            var NS_participant = 'org.petition.prov.participants.Civil'
-            
-            // 현재 필요한 것.
-            // 1. participant에 정의된 Civil 본인만이 자기 civilid로 민원을 실행할 수 있어야 함.
-            // 네트워크에서 접속하면 본인의 card로 접속할 테니... 그걸 구분하는 방법이 필요한데.
+        petition.Content = PetitionData.Content;
+        petition.timestamp = PetitionData.timestamp
+        // 이벤트 발동
 
-            // var currentCivil = getFullyQualifiedIdentifier(); 왜 인식을 못하지..
-            // if (currentCivil !== PetitionData.Civil){
-            //     throw new Error("Not same Civil.")
-            // }
-            
-            var timeNow = new Date().getTime()
-            var PetitionId = String(PetitionData.Civil.CivilId)+'-'+String(timeNow); 
-            // 일단 민원 고유번호를 시민번호 + 시간으로 정함.
-            var petition = factory.newResource(NS,'Petition',PetitionId);
-            
-            petition.PetitionId = PetitionId;
-            petition.Civil = PetitionData.Civil;
-            petition.title = PetitionData.title;
-            petition.BusNumber = PetitionData.BusNumber;
-            petition.Time = PetitionData.Time;
-            petition.location = PetitionData.location;
-            petition.Content = PetitionData.Content;
-        //optional Data
-            petition.BusCompany = PetitionData.BusCompany;
-            petition.DriverName = PetitionData.DriverName;
+        /////////////////////////
+
+        return PetitionRegistry.add(petition);
+    });
+    
+}
+
+/**
+ * ImpoliteCreate
+ * @param {org.petition.prov.petition.ImpoliteCreate} PetitionData
+ * @transaction
+ */
+function ImpoliteCreate(PetitionData){
+    return getAssetRegistry('org.petition.prov.petition.Petition')
+    .then(function(PetitionRegistry){
+        var factory = getFactory();
+        var NS =  'org.petition.prov.petition'; // Namespace
+        var timeNow = PetitionData.timestamp;
+        // 자바스크립트의 new Date()함수는 endorsing peer 레벨에서 통일이 안 된다고 함.
+        var PetitionId = "2-"+String(PetitionData.Civil.CivilId)+'-'+String(timeNow);
+        // 일단 민원 고유번호를 시민번호 + 시간으로 정함.
+        var petition = factory.newResource(NS,'Petition',PetitionId);
+
+        petition.PetitionId = PetitionId;
+        petition.Civil = PetitionData.Civil;
+        petition.location = PetitionData.location;
+        petition.DriverName = PetitionData.DriverName;
+        petition.BusNumber = PetitionData.BusNumber;
+        petition.VehicleId = PetitionData.VehicleId;
+        petition.Time = PetitionData.Time;
+
+        petition.Content = PetitionData.Content;
+        petition.timestamp = PetitionData.timestamp
+        // 이벤트 발동
+
+        /////////////////////////
+        return PetitionRegistry.add(petition);
+    });
+    
+}
+/**
+ * ImpoliteCreate
+ * @param {org.petition.prov.petition.IntervalCreate} PetitionData
+ * @transaction
+ */
+function IntervalCreate(PetitionData){
+    return getAssetRegistry('org.petition.prov.petition.Petition')
+    .then(function(PetitionRegistry){
+        var factory = getFactory();
+        var NS =  'org.petition.prov.petition'; // Namespace
+        var timeNow = PetitionData.timestamp;
+        var PetitionId = "3-"+String(PetitionData.Civil.CivilId)+'-'+String(timeNow);
+        // 일단 민원 고유번호를 시민번호 + 시간으로 정함.
+        var petition = factory.newResource(NS,'Petition',PetitionId);
+
+        petition.PetitionId = PetitionId;
+        petition.Civil = PetitionData.Civil;
+        petition.location = PetitionData.location;
+        petition.BusNumber = PetitionData.BusNumber;
+        petition.Time = PetitionData.Time;
+
+        petition.Content = PetitionData.Content;
+        petition.timestamp = PetitionData.timestamp
+        // 이벤트 발동
+
+        /////////////////////////
+        return PetitionRegistry.add(petition);
+    });
+    
+}
+
+/**
+ * ImpoliteCreate
+ * @param {org.petition.prov.petition.FeeCreate} PetitionData
+ * @transaction
+ */
+function FeeCreate(PetitionData){
+    return getAssetRegistry('org.petition.prov.petition.Petition')
+    .then(function(PetitionRegistry){
+        var factory = getFactory();
+        var NS =  'org.petition.prov.petition'; // Namespace
+        var timeNow = PetitionData.timestamp;
+        var PetitionId = "4-"+String(PetitionData.Civil.CivilId)+'-'+String(timeNow);
+        // 일단 민원 고유번호를 시민번호 + 시간으로 정함.
+        var petition = factory.newResource(NS,'Petition',PetitionId);
+
+        petition.PetitionId = PetitionId;
+        petition.isCash = PetitionData.isCash; // isCash는 true / false이다.
+        petition.Civil = PetitionData.Civil;
+        petition.location = PetitionData.location;
+        petition.DriverName = PetitionData.DriverName;
+        petition.BusNumber = PetitionData.BusNumber;
+        petition.VehicleId = PetitionData.VehicleId;
+        petition.Time = PetitionData.Time;
         
-            // var civilpetitionlist = await getParticipantRegistry(petition.Civil);
-            // var updatelist = civilpetitionlist.Petitionlist.push(PetitionId);
-            // await civilpetitionlist.update(Petitionlist);
-            // 원래는 petitionlist에 append하려 했는데 생각해보니 이걸 굳이 할 필요가 없다.
+        petition.Content = PetitionData.Content;
+        petition.timestamp = PetitionData.timestamp
+        // 이벤트 발동
 
-            
+        /////////////////////////
+        return PetitionRegistry.add(petition);
+
             // // Flight asset has an instance of the concept
             // // 2.2 Use the factory to create an instance of concept
             // var route = factory.newConcept(NS,"Route");
@@ -146,20 +230,22 @@ function    createPetition(PetitionData) {
             // event.flightId = flightId;
             // emit(event);
 
-            // 4. Add to registry
-            return PetitionRegistry.add(petition);
-        });
+    });
+    
 }
 
 /**
  * AcceptPetition
- * @param {org.petition.prov.petition.ResolvePetition} InputData
+ * @param {org.petition.prov.petition.AcceptPetition} InputData
  * @transaction
- * // 이 함수는 버스운송조합만 불러올 수 있는 함수입니다.
+ * // 이 함수는 정부 담당자만 불러올 수 있는 함수입니다.
  */
-function ResolvePetition(InputData) {
+async function AcceptPetition(InputData) {
+
+
     // 민원 전체 데이터를 불러온다
     var Data;
+    
     return getAssetRegistry("org.petition.prov.petition.Petition")
         .then(function(PetitionRegistry){
             // 특정 민원id에 해당하는 값을 가져온다
@@ -167,19 +253,57 @@ function ResolvePetition(InputData) {
                 .then(function(PetitionData){
                     // TRUE값으로 변경한다
                     Data = PetitionData;
-                    Data.Resolved = "TRUE";
+                    Data.Accepted = true;
                     // 변경한 값을 AssetRegistry에 다시 저장한다.
                     return getAssetRegistry("org.petition.prov.petition.Petition")
                     .then(function(UpDatedDataset){
+                        // 업데이트 이벤트 발생
+                        
+                        ///////////////////////
                         return UpDatedDataset.update(Data);
-                    })
-                });
+                        })
 
+                    // 여기까지 해서 Petition 값 설정 완료. 이제는 Feedback asset 값을 설정한다.
+                    .then(function(){
 
-        // 여기 이벤트 삽입.
-        });
-};
-   
+                        // GovernEmployee Participant 정보를 받아온다
+                        return getParticipantRegistry("org.petition.prov.participants.GovernEmployee")
+                        .then(function(ParticipantRegistry){
+
+                            // input으로 받은 GovernEmployee의 EmployeeId를 빼낸다
+                            return ParticipantRegistry.get(InputData.GovernEmployee.EmployeeId)
+                                .then(function(GovernEmployee){
+
+                                    // EmployeeId를 officerId에 저장한다.
+                                    var officerId = GovernEmployee.EmployeeId;
+
+                                    // 이제 FeedBack asset에 업데이트한다
+                                    return getAssetRegistry("org.petition.prov.petition.FeedBack")
+                                        .then(function(FeedbackRegistry){
+                                            var factory = getFactory();
+                                            var NS =  'org.petition.prov.petition'; // Namespace
+                                            var timeNow = InputData.timestamp;
+                                            var FeedBackId = String(officerId)+'-'+String(timeNow); 
+                                            
+                                            var FeedBack = factory.newResource(NS,'FeedBack',FeedBackId);
+                                            
+                                            FeedBack.FeedBackId = FeedBackId;
+                                            FeedBack.Petition = InputData.Petition;
+                                            FeedBack.GovernEmployee = InputData.GovernEmployee;
+                                            FeedBack.Comments = InputData.Comments;
+                                            FeedBack.timestamp = InputData.timestamp;
+
+                                            // 이벤트 발생
+
+                                            //////////////////
+                                            return FeedbackRegistry.add(FeedBack);
+                                            }) 
+                                    })
+                            })
+                        })
+                    });
+            });
+    };
 /**
  * ResolvePetition
  * @param {org.petition.prov.petition.ResolvePetition} InputData
