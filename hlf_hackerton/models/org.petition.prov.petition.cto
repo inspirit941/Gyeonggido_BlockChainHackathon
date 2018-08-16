@@ -49,8 +49,17 @@ asset FeedBack identified by FeedBackId{
   --> Petition Petition
   o String Comments // 접수처리완료 등의 사항 전달.
   o String BusComments optional
-  o DateTime timestamp
+  o DateTime Acceptedtimestamp
+  o DateTime Resolvedtimestamp optional
+  --> BusCompany BusCompany optional
+  o String BusDriverName optional
+  o String BusDriverId optional
 }
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+
 transaction NonstopCreate {
   --> Civil Civil
   o String location // 발생 위치. 무슨 정류장이라던지, 어느 사거리라던지.
@@ -89,17 +98,39 @@ transaction FeeCreate{
   o String Content // 구체적인 내용.
 }
 
+event PetitionCreated{
+  o String PetitionId
+  o String CivilId
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////
 // 관할 공무원의 접수 완료
 transaction AcceptPetition{
   --> GovernEmployee GovernEmployee
   --> Petition Petition
   o String Comments // 접수처리완료 등의 사항 전달.
 }
+// 접수 완료 시 발생되는 이벤트
+event PetitionAccepted{
+  o String FeedBackId
+  o String EmployeeId
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
 
 // 민원이 해결되었다는 걸 알리는 transaction.
 transaction ResolvePetition {
   --> Petition Petition
   --> BusCompany BusCompany
+  --> FeedBack FeedBack
+  o String BusComments
+  o String BusDriverName optional
+  o String BusDriverId optional
+}
+
+event PetitionResolved{
+  o String FeedBackId
+  o String BusCompanyName
 }
 
 

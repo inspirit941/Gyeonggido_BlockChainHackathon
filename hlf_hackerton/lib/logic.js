@@ -17,30 +17,30 @@
  * Write your transction processor functions here
  */
 
-/**
- * Sample transaction
- * @param {org.petition.prov.participants.SampleTransaction} sampleTransaction
- * @transaction
- */
-async function sampleTransaction(tx) {
-    // Save the old value of the asset.
-    const oldValue = tx.asset.value;
+// /**
+//  * Sample transaction
+//  * @param {org.petition.prov.participants.SampleTransaction} sampleTransaction
+//  * @transaction
+//  */
+// async function sampleTransaction(tx) {
+//     // Save the old value of the asset.
+//     const oldValue = tx.asset.value;
 
-    // Update the asset with the new value.
-    tx.asset.value = tx.newValue;
+//     // Update the asset with the new value.
+//     tx.asset.value = tx.newValue;
 
-    // Get the asset registry for the asset.
-    const assetRegistry = await getAssetRegistry('org.petition.prov.participants.SampleAsset'); 
-    // Update the asset in the asset registry.
-    await assetRegistry.update(tx.asset);
+//     // Get the asset registry for the asset.
+//     const assetRegistry = await getAssetRegistry('org.petition.prov.participants.SampleAsset'); 
+//     // Update the asset in the asset registry.
+//     await assetRegistry.update(tx.asset);
 
-    // Emit an event for the modified asset.
-    let event = getFactory().newEvent('org.petition.prov.participants', 'SampleEvent');
-    event.asset = tx.asset;
-    event.oldValue = oldValue;
-    event.newValue = tx.newValue;
-    emit(event);
-}
+//     // Emit an event for the modified asset.
+//     let event = getFactory().newEvent('org.petition.prov.participants', 'SampleEvent');
+//     event.asset = tx.asset;
+//     event.oldValue = oldValue;
+//     event.newValue = tx.newValue;
+//     emit(event);
+// }
 /**
  * CreatePetition
  * @param {org.petition.prov.participants.CreateCivil} CivilData
@@ -67,22 +67,7 @@ function    CreateCivil(CivilData) {
             return CivilRegistry.add(Civil);
         });
 }
-function makeDate(){
-    var today = new Date();
-    var dd = today.getDate();
-    var mm = today.getMonth()+1; //January is 0!
-    var yyyy = today.getFullYear();
 
-    if(dd<10) {
-        dd = '0'+dd
-    } 
-
-    if(mm<10) {
-        mm = '0'+mm
-    } 
-    var fulltoday = yyyy + '/' + mm + '/' +dd;
-    return fulltoday;
-}
 /**
  * NonstopCreate
  * @param {org.petition.prov.petition.NonstopCreate} PetitionData
@@ -109,7 +94,10 @@ function NonstopCreate(PetitionData){
         petition.Content = PetitionData.Content;
         petition.timestamp = PetitionData.timestamp
         // 이벤트 발동
-
+        var event = factory.newEvent(NS, "PetitionCreated");
+        event.PetitionId = PetitionId;
+        event.CivilId = PetitionData.Civil.CivilId;
+        emit(event);
         /////////////////////////
 
         return PetitionRegistry.add(petition);
@@ -144,7 +132,10 @@ function ImpoliteCreate(PetitionData){
         petition.Content = PetitionData.Content;
         petition.timestamp = PetitionData.timestamp
         // 이벤트 발동
-
+        var event = factory.newEvent(NS, "PetitionCreated");
+        event.PetitionId = PetitionId;
+        event.CivilId = PetitionData.Civil.CivilId;
+        emit(event);
         /////////////////////////
         return PetitionRegistry.add(petition);
     });
@@ -174,7 +165,10 @@ function IntervalCreate(PetitionData){
         petition.Content = PetitionData.Content;
         petition.timestamp = PetitionData.timestamp
         // 이벤트 발동
-
+        var event = factory.newEvent(NS, "PetitionCreated");
+        event.PetitionId = PetitionId;
+        event.CivilId = PetitionData.Civil.CivilId;
+        emit(event);
         /////////////////////////
         return PetitionRegistry.add(petition);
     });
@@ -208,28 +202,12 @@ function FeeCreate(PetitionData){
         petition.Content = PetitionData.Content;
         petition.timestamp = PetitionData.timestamp
         // 이벤트 발동
-
+        var event = factory.newEvent(NS, "PetitionCreated");
+        event.PetitionId = PetitionId;
+        event.CivilId = PetitionData.Civil.CivilId;
+        emit(event);
         /////////////////////////
         return PetitionRegistry.add(petition);
-
-            // // Flight asset has an instance of the concept
-            // // 2.2 Use the factory to create an instance of concept
-            // var route = factory.newConcept(NS,"Route");
-
-            // // 2.3 Set the data in the concept 'route'
-            // route.origin = flightData.origin;
-            // route.destination = flightData.destination;
-            // route.schedule = flightData.schedule;
-
-            // // 2.4 Set the route attribute on the asset
-            // flight.route = route;
-            
-
-            // // 3 Emit the event FlightCreated
-            // var event = factory.newEvent(NS, 'FlightCreated');
-            // event.flightId = flightId;
-            // emit(event);
-
     });
     
 }
@@ -240,9 +218,7 @@ function FeeCreate(PetitionData){
  * @transaction
  * // 이 함수는 정부 담당자만 불러올 수 있는 함수입니다.
  */
-async function AcceptPetition(InputData) {
-
-
+function AcceptPetition(InputData) {
     // 민원 전체 데이터를 불러온다
     var Data;
     
@@ -257,9 +233,7 @@ async function AcceptPetition(InputData) {
                     // 변경한 값을 AssetRegistry에 다시 저장한다.
                     return getAssetRegistry("org.petition.prov.petition.Petition")
                     .then(function(UpDatedDataset){
-                        // 업데이트 이벤트 발생
                         
-                        ///////////////////////
                         return UpDatedDataset.update(Data);
                         })
 
@@ -291,10 +265,13 @@ async function AcceptPetition(InputData) {
                                             FeedBack.Petition = InputData.Petition;
                                             FeedBack.GovernEmployee = InputData.GovernEmployee;
                                             FeedBack.Comments = InputData.Comments;
-                                            FeedBack.timestamp = InputData.timestamp;
+                                            FeedBack.Acceptedtimestamp = InputData.timestamp;
 
                                             // 이벤트 발생
-
+                                            var event = factory.newEvent(NS, "PetitionAccepted");
+                                            event.FeedBackId = FeedBackId;
+                                            event.EmployeeId = officerId;
+                                            emit(event);
                                             //////////////////
                                             return FeedbackRegistry.add(FeedBack);
                                             }) 
@@ -311,25 +288,64 @@ async function AcceptPetition(InputData) {
  * // 이 함수는 버스운송조합만 불러올 수 있는 함수입니다.
  */
 function ResolvePetition(InputData) {
-    // 민원 전체 데이터를 불러온다
-    var Data;
     return getAssetRegistry("org.petition.prov.petition.Petition")
-        .then(function(PetitionRegistry){
-            // 특정 민원id에 해당하는 값을 가져온다
-            return PetitionRegistry.get(InputData.Petition.PetitionId)
-                .then(function(PetitionData){
-                    // TRUE값으로 변경한다
-                    Data = PetitionData;
-                    Data.Resolved = "TRUE";
-                    // 변경한 값을 AssetRegistry에 다시 저장한다.
-                    return getAssetRegistry("org.petition.prov.petition.Petition")
-                    .then(function(UpDatedDataset){
-                        return UpDatedDataset.update(Data);
+    .then(function(PetitionRegistry){
+        // 특정 민원id에 해당하는 값을 가져온다
+        return PetitionRegistry.get(InputData.Petition.PetitionId)
+            .then(function(PetitionData){
+                // TRUE값으로 변경한다
+                Data = PetitionData;
+                Data.Resolved = true;
+                // 변경한 값을 AssetRegistry에 다시 저장한다.
+                return getAssetRegistry("org.petition.prov.petition.Petition")
+                .then(function(UpDatedDataset){
+                    
+                    return UpDatedDataset.update(Data);
+                    })
+
+                // 여기까지 해서 Petition 값 설정 완료. 이제는 Feedback asset 값을 설정한다.
+                .then(function(){
+
+                    // BusCompany 정보를 받아온다
+                    return getParticipantRegistry("org.petition.prov.participants.BusCompany")
+                    .then(function(ParticipantRegistry){
+
+                        // input으로 받은 BusCompany의 Number를 빼낸다
+                        return ParticipantRegistry.get(InputData.BusCompany.BusCompanyNumber)
+                            .then(function(BusCompany){
+
+                                // 필요한 값들을 저장한다.
+                                var BusCompanyName = BusCompany.BusCompanyName;
+                                // var BusDriverId = BusCompany.BusDriver.DriverId;
+                                // var BusDriverName = BusCompany.BusDriver.DriverName;
+                                // 이제 FeedBack asset에 업데이트한다
+                                return getAssetRegistry("org.petition.prov.petition.FeedBack")
+                                    .then(function(FeedbackRegistry){
+                                        return FeedbackRegistry.get(InputData.FeedBack.FeedBackId)
+                                            .then(function(FeedBackData){
+                                                var factory = getFactory();
+                                                var NS =  'org.petition.prov.petition'; // Namespace
+                                                Data = FeedBackData;
+                                                Data.BusComments = InputData.BusComments;
+                                                Data.Resolvedtimestamp = InputData.timestamp;
+                                                Data.BusCompany = InputData.BusCompany;
+                                                
+                                                // optional 값들. 버스회사의 피드백에 넣어도 되고 아니어도 되는 것들
+                                                Data.BusDriverName = InputData.BusDriverName;
+                                                Data.BusDriverId = InputData.BusDriverId;
+
+                                                // 이벤트 발생
+                                                var event = factory.newEvent(NS, "PetitionResolved");
+                                                event.FeedBackId = Data.FeedBackId;
+                                                event.BusCompanyName = BusCompanyName;
+                                                emit(event);
+                                                //////////////////
+                                                return FeedbackRegistry.update(Data)
+                                            });
+                                        }) 
+                                })
+                        })
                     })
                 });
-
-
-        // 여기 이벤트 삽입.
         });
 };
-    

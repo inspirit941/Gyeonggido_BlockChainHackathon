@@ -14,34 +14,6 @@
  * limitations under the License.
  */
 
-/**
- * Write your model definitions here
- */
-
-namespace org.petition.prov.participants
-
-participant headquarter identified by Province{
-  o String Province // 경기도청. 이 participant에는 admin 권한에 필적하는 걸 줄 생각.
-}
-
-participant PetitionDepartment identified by ParticiapantKey extends headquarter{
-  o String ParticiapantKey // 고유 번호
-  o String DepartmentName default = '교통행정과' // 부서 이름
-  --> headquarter headquarter //경기도의 Relation으로 편입해야 할까?
-
-}
-participant GovernEmployee identified by EmployeeId {
-  o String EmployeeId // 고유번호. 이름을 쓰려 했는데 동명이인이 있을 수 있다고 생각함.
-  --> PetitionDepartment PetitionDepartment
-}
-
-participant Civil identified by CivilId{
-  o String CivilId
-  // o String[] Petitionlist optional// 시민이 제기한 민원 id를 list로 넣는 값. 처음 civil이 만들어질 때는 값이 없으니 optional.
-  o CivilDetail CivilDetail // 
-  
-}
-
 /* 경기도청에서 민원신청을 넣을 때 기입해야 하는 정보는
 연락처 - 유선전화, 휴대폰 둘 중 하나는 필수
 전자우편 - 필수
@@ -60,8 +32,39 @@ participant Civil identified by CivilId{
 민원 공유여부 동의 묻기.
 */
 
+/**
+ * Write your model definitions here
+ */
 
+namespace org.petition.prov.participants
+//////////////////////////////////////////////////////////////////////
+// 정부 쪽
+participant headquarter identified by Province{
+  o String Province default = "64100000" // 경기도청. 이 participant에는 admin 권한에 필적하는 걸 줄 생각.
+  o String Name default = "경기도"
+}
 
+participant PetitionDepartment identified by ParticipantKey{
+  o String ParticipantKey // https://www.code.go.kr/stdcode/orgCodeL.do 여기서 부서 코드 조회 가능. 예시로는 성남의 도로교통국 대중교통과 -> 3780251
+  o String District // 무슨 시인지.
+  o String DepartmentName// 구체적인 부서 이름 예시: 성남은 교통도로국 대중교통과 버스행정팀에서 민원 처리를 담당함. 위의 key에서 대중교통과까지 특정이 된다.
+  --> headquarter headquarter // 경기도의 Relation으로 편입해야 할까?
+
+}
+participant GovernEmployee identified by EmployeeId {
+  o String EmployeeId // 고유번호. 이름을 쓰려 했는데 동명이인이 있을 수 있다고 생각함. 또는 전화번호를 써도 괜찮다.
+  o String Name //regex=/[가-힣][가-힣]([가-힣])?([가-힣])?/ 이름 두 글자, 세 글자 또는 네 글자.
+  o String TeamName // 소속 팀 이름. 성남은 버스행정팀.
+  --> PetitionDepartment PetitionDepartment
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+participant Civil identified by CivilId{
+  o String CivilId
+  // o String[] Petitionlist optional// 시민이 제기한 민원 id를 list로 넣는 값. 처음 civil이 만들어질 때는 값이 없으니 optional.
+  o CivilDetail CivilDetail // 
+}
 concept CivilDetail {
   o String Name //regex=/[가-힣][가-힣][가-힣]([가-힣])?/ //이름은 세 글자 또는 네 글자로.
   o String email //regex=/\w+@\w+.\w+/
@@ -74,17 +77,14 @@ transaction CreateCivil{
   o CivilDetail CivilDetail
 }
 
-participant BusAssociation identified by BusAssociationId{
-  o String BusAssociationId  // 버스운송조합 고유번호
-  o String BusAssociationName // 버스운송조합이름
-}
+/////////////////////////////////////////////////////////////////
 
 participant BusCompany identified by BusCompanyNumber {
   o String BusCompanyNumber //regex=/031-(\d{3}|\d{4})-\d{4}/
   // 사업자등록번호를 쓰려 했는데 경기도버스운송조합 홈페이지를 가보니 사업자번호가 없다. 회사 전화번호를 입력해야 할 듯
   o String BusCompanyName // 버스회사 이름
   o String[] BusRouteNumber // 회사가 소유한 버스 노선번호
-  --> BusAssociation BusAssociation // 소속된 버스운송조합.
+  o String[] ServiceDistrict // 버스가 지나는 구역
 }
 
 participant BusDriver identified by DriverId{
@@ -94,29 +94,3 @@ participant BusDriver identified by DriverId{
 }
 // 버스 + timestamp가 있으면 driver를 알 수 있다.
 // 투명하게 볼 수 있는 건 맞다.
-
-// Sample에서 만들었던 파일들.
-
-participant SampleParticipant identified by participantId {
-  o String participantId
-  o String firstName
-  o String lastName
-}
-
-asset SampleAsset identified by assetId {
-  o String assetId
-  --> SampleParticipant owner
-  o String value
-}
-
-transaction SampleTransaction {
-  --> SampleAsset asset
-  o String newValue
-}
-
-event SampleEvent {
-  --> SampleAsset asset
-  o String oldValue
-  o String newValue
-}
-
