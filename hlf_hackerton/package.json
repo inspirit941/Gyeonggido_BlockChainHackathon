@@ -3,7 +3,7 @@
     "composer": "^0.19.13"
   },
   "name": "hlf_hackerton",
-  "version": "0.0.2",
+  "version": "0.0.1",
   "description": "hlf_hackerton project",
   "scripts": {
     "prepublish": "mkdirp ./dist && composer archive create --sourceType dir --sourceName . -a ./dist/hlf_hackerton.bna",

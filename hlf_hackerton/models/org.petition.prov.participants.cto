@@ -84,7 +84,7 @@ participant BusCompany identified by BusCompanyNumber {
   // 사업자등록번호를 쓰려 했는데 경기도버스운송조합 홈페이지를 가보니 사업자번호가 없다. 회사 전화번호를 입력해야 할 듯
   o String BusCompanyName // 버스회사 이름
   o String[] BusRouteNumber // 회사가 소유한 버스 노선번호
-  o String[] ServiceDistrict // 버스가 지나는 구역
+  o String[] ServiceDistrict // 버스가 지나는 구역. 근데 이걸 알 수 있는 방법이 마땅치 않다. 모든 노선을 지도에 넣어서 어느 시를 통과하는지 일일이 찾아낼 수도 없고 말이지...
 }
 
 participant BusDriver identified by DriverId{
