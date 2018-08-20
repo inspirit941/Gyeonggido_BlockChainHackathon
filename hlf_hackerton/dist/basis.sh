@@ -7,7 +7,7 @@ composer network start -c PeerAdmin@hlfv1 -n hlf_hackerton -V 0.0.1  -A admin -S
 
 
 
-###composer card import -f admin@hlf_hackerton.card
+composer card import -f admin@hlf_hackerton.card
 
 # 경기도청 participant 넣기
 composer participant add -d '{
@@ -36,7 +36,7 @@ composer participant add -d'{
   "District":"성남시",
   "DepartmentName": "대중교통과",
   "headquarter": "resource:org.petition.prov.participants.headquarter#64100000"
-}' -c province@hlf_hackerton 
+}' -c admin@hlf_hackerton 
 ## rule 설정이 되어 있지 않아서, province라고 해도 새 participant를 넣을 권한이 없다.
 
 composer identity issue -u snBusdepartment -a org.petition.prov.participants.PetitionDepartment#3780251 -c admin@hlf_hackerton -x
@@ -45,9 +45,9 @@ composer participant add -d '{
   "$class": "org.petition.prov.participants.GovernEmployee",
   "EmployeeId": "031-729-3717",
   "Name": "박욱현",
-  "Team": "버스행정팀",
+  "TeamName": "버스행정팀",
   "PetitionDepartment": "resource:org.petition.prov.participants.PetitionDepartment#3780251"
-}'
+}' -c admin@hlf_hackerton
 
 composer identity issue -u snBusOfficer -a org.petition.prov.participants.GovernEmployee#031-729-3717 -c admin@hlf_hackerton
 
@@ -67,9 +67,9 @@ composer participant add -d '{
   "$class": "org.petition.prov.participants.GovernEmployee",
   "EmployeeId": "031-324-2156",
   "Name": "이윤진",
-  "Team": "민원여권과",
+  "TeamName": "민원여권과",
   "PetitionDepartment": "resource:org.petition.prov.participants.PetitionDepartment#4050444"
-}'
+}' -c admin@hlf_hackerton 
 
 composer identity issue -u yiBusOfficer -a org.petition.prov.participants.GovernEmployee#031-324-2156 -c admin@hlf_hackerton
 ##############################################################################
@@ -88,9 +88,9 @@ composer participant add -d '{
   "$class": "org.petition.prov.participants.GovernEmployee",
   "EmployeeId": "031-228-2130",
   "Name": "구솔휘",
-  "Team": "yes종합민원팀",
+  "TeamName": "yes종합민원팀",
   "PetitionDepartment": "resource:org.petition.prov.participants.PetitionDepartment#4050444"
-}'
+}' -c admin@hlf_hackerton
 
 composer identity issue -u swBusOfficer -a org.petition.prov.participants.GovernEmployee#031-228-2130 -c admin@hlf_hackerton
 
@@ -300,3 +300,6 @@ composer participant add -d '{
 }' -c admin@hlf_hackerton
 
 composer identity issue -u 031-321-3721 -a org.petition.prov.participants.BusCompany#031-321-3721 -c admin@hlf_hackerton
+
+
+composer-rest-server -c admin@hlf_hackerton -n never

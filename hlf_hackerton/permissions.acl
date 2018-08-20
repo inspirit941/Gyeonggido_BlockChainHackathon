@@ -63,3 +63,48 @@ rule NetworkAdminSystem {
     resource: "org.hyperledger.composer.system.**"
     action: ALLOW
 }
+
+rule CivilAccessOnParticipant {
+  description: "Civil 계정의 access 권한"
+  participant(m): "org.petition.prov.participants.Civil"
+  operation: CREATE
+  resource(v): "org.petition.prov.participants.CreateCivil"
+  condition: (v.getIdentifier()==m.getIdentifier())
+  action: ALLOW
+}
+
+rule CivilAccessOnPetition {
+  description: "Civil 계정의 access 권한"
+  participant(m): "org.petition.prov.participants.Civil"
+  operation: CREATE, DELETE
+  resource(v): "org.petition.prov.petition.Petition"
+  condition: (v.owner.getIdentifier() == m.getIdentifier())
+  action: ALLOW
+}
+
+rule GovernAccessOnPetition {
+  description: "정부 계정의 access 권한"
+  participant(m): "org.petition.prov.participants.GovernEmployee"
+  operation: CREATE
+  resource(v): "org.petition.prov.petition.FeedBack"
+  condition: (v.owner.getIdentifier() == m.getIdentifier())
+  action: ALLOW  
+}
+
+rule GovernAccessOnTransaction {
+  description: "정부 계정의 access 권한"
+  participant(m): "org.petition.prov.participants.GovernEmployee"
+  operation: CREATE
+  resource(v): "org.petition.prov.petition.AcceptPetition"
+  condition: (v.owner.getIdentifier() == m.getIdentifier())
+  action: ALLOW  
+}
+
+rule BusCompanyAccessOnTransaction{
+  description: "버스회사 계정의 access 권한"
+  participant(m): "org.petition.prov.participants.BusCompany"
+  operation: CREATE
+  resource(v): "org.petition.prov.petition.ResolvePetition"
+  condition: (v.owner.getIdentifier() == m.getIdentifier())
+  action: ALLOW
+}
