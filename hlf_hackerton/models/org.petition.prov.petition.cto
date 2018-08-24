@@ -24,7 +24,8 @@ import org.petition.prov.participants.* // 참여자 전체 속성을 그대로 
 asset Petition identified by PetitionId{
   
   o String PetitionId
-  --> Civil Civil // 민원 제기한 사람 정보를 입력하는 창.
+  o String CivilId
+  // --> Civil Civil // 민원 제기한 사람 정보를 입력하는 창.
   //o String title // 필요하다면 민원 제목은 여기에 넣는 걸 생각함. v0.1
   o String BusNumber // 버스번호. 100-1 같은 숫자가 있어 string으로 처리해야 함
   o DateTime Time // 발생 일월시. 숫자로 할지 string으로 할지... 뭐가 데이터 처리에 편하지?
@@ -38,7 +39,8 @@ asset Petition identified by PetitionId{
   o String DriverName optional // 버스기사 이름을 알고 있다면 적을 수 있도록.
   o Boolean isCash optional  // 요금 민원에서 현금인지 카드인지
   
-  --> GovernEmployee GovernEmployee optional
+  // --> GovernEmployee GovernEmployee optional
+  o String GovernEmployee optional
 
   o Boolean Accepted default = false
   o Boolean Resolved default = false // 관할 공무원이 민원 해결했을 경우 TRUE로 바꾸는 영역.
@@ -73,7 +75,8 @@ asset Petition identified by PetitionId{
 ///////////////////////////////////////////////////////////////////////////////
 
 transaction NonstopCreate {
-  --> Civil Civil
+  // --> Civil Civil
+  o String CivilId
   o String location // 발생 위치. 무슨 정류장이라던지, 어느 사거리라던지.
   o String BusStopName // 버스정류장 이름. (알아서 적어넣는 거)
   o String BusNumber // 버스번호. 100-1 같은 숫자가 있어 string으로 처리해야 함
@@ -84,7 +87,8 @@ transaction NonstopCreate {
 }
 
 transaction ImpoliteCreate{
-  --> Civil Civil
+    // --> Civil Civil
+  o String CivilId
   o String location // 발생 위치. 무슨 정류장이라던지, 어느 사거리라던지.
   o String DriverName optional // 버스기사 이름을 알고 있다면 적을 수 있도록.
   o String BusNumber // 버스번호. 100-1 같은 숫자가 있어 string으로 처리해야 함
@@ -93,14 +97,16 @@ transaction ImpoliteCreate{
   o String Content // 구체적인 내용.
 }
 transaction IntervalCreate{
-  --> Civil Civil
+    // --> Civil Civil
+  o String CivilId
   o String location // 발생 위치. 무슨 정류장이라던지, 어느 사거리라던지.
   o String BusNumber // 버스번호. 100-1 같은 숫자가 있어 string으로 처리해야 함
   o DateTime Time // 사건 발생 시간.
   o String Content // 구체적인 내용.
 }
 transaction FeeCreate{
-  --> Civil Civil
+    // --> Civil Civil
+  o String CivilId
   o Boolean isCash
   o String location // 발생 위치. 무슨 정류장이라던지, 어느 사거리라던지.
   o String DriverName optional // 버스기사 이름을 알고 있다면 적을 수 있도록.
@@ -118,7 +124,8 @@ event PetitionCreated{
 ////////////////////////////////////////////////////////////////////////////////////////////
 // 관할 공무원의 접수 완료
 transaction AcceptPetition{
-  --> GovernEmployee GovernEmployee
+  // --> GovernEmployee GovernEmployee
+  o String GovernEmployee
   --> Petition Petition
   o String Comments // 접수처리완료 등의 사항 전달.
 }
@@ -133,6 +140,7 @@ transaction AcceptPetition{
 // 민원이 해결되었다는 걸 알리는 transaction.
 transaction ResolvePetition {
   --> Petition Petition
+
   // --> BusCompany BusCompany
   o String BusComments
   o String BusDriverName optional

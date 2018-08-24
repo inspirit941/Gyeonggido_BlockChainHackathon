@@ -57,11 +57,11 @@ function NonstopCreate(PetitionData){
         var NS =  'org.petition.prov.petition'; // Namespace
         var timeNow = PetitionData.timestamp;
         var timeNow = Date.parse(timeNow);
-        var PetitionId = "1-"+String(PetitionData.Civil.CivilId)+'-'+String(timeNow); 
+        var PetitionId = "1-"+String(PetitionData.CivilId)+'-'+String(timeNow); 
         // 일단 민원 고유번호를 시민번호 + 시간으로 정함.
         var petition = factory.newResource(NS,'Petition',PetitionId);
         petition.PetitionId = PetitionId;
-        petition.Civil = PetitionData.Civil;
+        petition.CivilId = PetitionData.CivilId;
         petition.location = PetitionData.location;
         petition.BusStopName = PetitionData.BusStopName;
         petition.BusNumber = PetitionData.BusNumber;
@@ -73,7 +73,7 @@ function NonstopCreate(PetitionData){
         // 이벤트 발동
         var event = factory.newEvent(NS, "PetitionCreated");
         event.PetitionId = PetitionId;
-        event.CivilId = PetitionData.Civil.CivilId;
+        event.CivilId = PetitionData.CivilId;
         emit(event);
         /////////////////////////
 
@@ -95,12 +95,12 @@ function ImpoliteCreate(PetitionData){
         var timeNow = PetitionData.timestamp;
         var timeNow = Date.parse(timeNow);
         // 자바스크립트의 new Date()함수는 endorsing peer 레벨에서 통일이 안 된다고 함.
-        var PetitionId = "2-"+String(PetitionData.Civil.CivilId)+'-'+String(timeNow);
+        var PetitionId = "2-"+String(PetitionData.CivilId)+'-'+String(timeNow);
         // 일단 민원 고유번호를 시민번호 + 시간으로 정함.
         var petition = factory.newResource(NS,'Petition',PetitionId);
 
         petition.PetitionId = PetitionId;
-        petition.Civil = PetitionData.Civil;
+        petition.CivilId = PetitionData.CivilId;
         petition.location = PetitionData.location;
         petition.DriverName = PetitionData.DriverName;
         petition.BusNumber = PetitionData.BusNumber;
@@ -112,7 +112,7 @@ function ImpoliteCreate(PetitionData){
         // 이벤트 발동
         var event = factory.newEvent(NS, "PetitionCreated");
         event.PetitionId = PetitionId;
-        event.CivilId = PetitionData.Civil.CivilId;
+        event.CivilId = PetitionData.CivilId;
         emit(event);
         /////////////////////////
         return PetitionRegistry.add(petition);
@@ -131,12 +131,12 @@ function IntervalCreate(PetitionData){
         var NS =  'org.petition.prov.petition'; // Namespace
         var timeNow = PetitionData.timestamp;
         var timeNow = Date.parse(timeNow);
-        var PetitionId = "3-"+String(PetitionData.Civil.CivilId)+'-'+String(timeNow);
+        var PetitionId = "3-"+String(PetitionData.CivilId)+'-'+String(timeNow);
         // 일단 민원 고유번호를 시민번호 + 시간으로 정함.
         var petition = factory.newResource(NS,'Petition',PetitionId);
 
         petition.PetitionId = PetitionId;
-        petition.Civil = PetitionData.Civil;
+        petition.CivilId = PetitionData.CivilId;
         petition.location = PetitionData.location;
         petition.BusNumber = PetitionData.BusNumber;
         petition.Time = PetitionData.Time;
@@ -146,7 +146,7 @@ function IntervalCreate(PetitionData){
         // 이벤트 발동
         var event = factory.newEvent(NS, "PetitionCreated");
         event.PetitionId = PetitionId;
-        event.CivilId = PetitionData.Civil.CivilId;
+        event.CivilId = PetitionData.CivilId;
         emit(event);
         /////////////////////////
         return PetitionRegistry.add(petition);
@@ -166,13 +166,13 @@ function FeeCreate(PetitionData){
         var NS =  'org.petition.prov.petition'; // Namespace
         var timeNow = PetitionData.timestamp;
         var timeNow = Date.parse(timeNow);
-        var PetitionId = "4-"+String(PetitionData.Civil.CivilId)+'-'+String(timeNow);
+        var PetitionId = "4-"+String(PetitionData.CivilId)+'-'+String(timeNow);
         // 일단 민원 고유번호를 시민번호 + 시간으로 정함.
         var petition = factory.newResource(NS,'Petition',PetitionId);
 
         petition.PetitionId = PetitionId;
         petition.isCash = PetitionData.isCash; // isCash는 true / false이다.
-        petition.Civil = PetitionData.Civil;
+        petition.CivilId = PetitionData.CivilId;
         petition.location = PetitionData.location;
         petition.DriverName = PetitionData.DriverName;
         petition.BusNumber = PetitionData.BusNumber;
@@ -184,7 +184,7 @@ function FeeCreate(PetitionData){
         // 이벤트 발동
         var event = factory.newEvent(NS, "PetitionCreated");
         event.PetitionId = PetitionId;
-        event.CivilId = PetitionData.Civil.CivilId;
+        event.CivilId = PetitionData.CivilId;
         emit(event);
         /////////////////////////
         return PetitionRegistry.add(petition);
