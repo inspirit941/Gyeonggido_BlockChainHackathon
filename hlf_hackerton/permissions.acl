@@ -82,15 +82,6 @@ rule CivilAccessOnPetition {
   action: ALLOW
 }
 
-rule GovernAccessOnPetition {
-  description: "정부 계정의 access 권한"
-  participant(m): "org.petition.prov.participants.GovernEmployee"
-  operation: CREATE
-  resource(v): "org.petition.prov.petition.FeedBack"
-  condition: (v.owner.getIdentifier() == m.getIdentifier())
-  action: ALLOW  
-}
-
 rule GovernAccessOnTransaction {
   description: "정부 계정의 access 권한"
   participant(m): "org.petition.prov.participants.GovernEmployee"

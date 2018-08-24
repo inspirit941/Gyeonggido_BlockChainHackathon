@@ -51,7 +51,7 @@ participant PetitionDepartment identified by ParticipantKey{
   --> headquarter headquarter // 경기도의 Relation으로 편입해야 할까?
 
 }
-participant GovernEmployee identified by EmployeeId {
+participant GovernEmployee identified by Name {
   o String EmployeeId // 고유번호. 이름을 쓰려 했는데 동명이인이 있을 수 있다고 생각함. 또는 전화번호를 써도 괜찮다.
   o String Name //regex=/[가-힣][가-힣]([가-힣])?([가-힣])?/ 이름 두 글자, 세 글자 또는 네 글자.
   o String TeamName // 소속 팀 이름. 성남은 버스행정팀.

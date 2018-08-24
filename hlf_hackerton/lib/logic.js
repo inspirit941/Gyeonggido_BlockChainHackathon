@@ -56,6 +56,7 @@ function NonstopCreate(PetitionData){
         var factory = getFactory();
         var NS =  'org.petition.prov.petition'; // Namespace
         var timeNow = PetitionData.timestamp;
+        var timeNow = Date.parse(timeNow);
         var PetitionId = "1-"+String(PetitionData.Civil.CivilId)+'-'+String(timeNow); 
         // 일단 민원 고유번호를 시민번호 + 시간으로 정함.
         var petition = factory.newResource(NS,'Petition',PetitionId);
@@ -92,6 +93,7 @@ function ImpoliteCreate(PetitionData){
         var factory = getFactory();
         var NS =  'org.petition.prov.petition'; // Namespace
         var timeNow = PetitionData.timestamp;
+        var timeNow = Date.parse(timeNow);
         // 자바스크립트의 new Date()함수는 endorsing peer 레벨에서 통일이 안 된다고 함.
         var PetitionId = "2-"+String(PetitionData.Civil.CivilId)+'-'+String(timeNow);
         // 일단 민원 고유번호를 시민번호 + 시간으로 정함.
@@ -128,6 +130,7 @@ function IntervalCreate(PetitionData){
         var factory = getFactory();
         var NS =  'org.petition.prov.petition'; // Namespace
         var timeNow = PetitionData.timestamp;
+        var timeNow = Date.parse(timeNow);
         var PetitionId = "3-"+String(PetitionData.Civil.CivilId)+'-'+String(timeNow);
         // 일단 민원 고유번호를 시민번호 + 시간으로 정함.
         var petition = factory.newResource(NS,'Petition',PetitionId);
@@ -162,6 +165,7 @@ function FeeCreate(PetitionData){
         var factory = getFactory();
         var NS =  'org.petition.prov.petition'; // Namespace
         var timeNow = PetitionData.timestamp;
+        var timeNow = Date.parse(timeNow);
         var PetitionId = "4-"+String(PetitionData.Civil.CivilId)+'-'+String(timeNow);
         // 일단 민원 고유번호를 시민번호 + 시간으로 정함.
         var petition = factory.newResource(NS,'Petition',PetitionId);
@@ -195,68 +199,72 @@ function FeeCreate(PetitionData){
  * // 이 함수는 정부 담당자만 불러올 수 있는 함수입니다.
  */
 function AcceptPetition(InputData) {
+
+    // FeedBack을 먼저 만든 다음, Petition을 업데이트한다.
     // 민원 전체 데이터를 불러온다
-    var Data;
-    
     return getAssetRegistry("org.petition.prov.petition.Petition")
-        .then(function(PetitionRegistry){
-            // 특정 민원id에 해당하는 값을 가져온다
-            return PetitionRegistry.get(InputData.Petition.PetitionId)
-                .then(function(PetitionData){
-                    // TRUE값으로 변경한다
-                    Data = PetitionData;
-                    Data.Accepted = true;
-                    // 변경한 값을 AssetRegistry에 다시 저장한다.
-                    return getAssetRegistry("org.petition.prov.petition.Petition")
-                    .then(function(UpDatedDataset){
-                        
-                        return UpDatedDataset.update(Data);
-                        })
-
-                    // 여기까지 해서 Petition 값 설정 완료. 이제는 Feedback asset 값을 설정한다.
-                    .then(function(){
-
-                        // GovernEmployee Participant 정보를 받아온다
-                        return getParticipantRegistry("org.petition.prov.participants.GovernEmployee")
-                        .then(function(ParticipantRegistry){
-
-                            // input으로 받은 GovernEmployee의 EmployeeId를 빼낸다
-                            return ParticipantRegistry.get(InputData.GovernEmployee.EmployeeId)
-                                .then(function(GovernEmployee){
-
-                                    // EmployeeId를 officerId에 저장한다.
-                                    var officerId = GovernEmployee.EmployeeId;
-
-                                    // 이제 FeedBack asset에 업데이트한다
-                                    return getAssetRegistry("org.petition.prov.petition.FeedBack")
-                                        .then(function(FeedbackRegistry){
-                                            var factory = getFactory();
-                                            var NS =  'org.petition.prov.petition'; // Namespace
-                                            var timeNow = InputData.timestamp;
-                                            var FeedBackId = String(officerId)+'-'+String(timeNow); 
-                                            
-                                            var FeedBack = factory.newResource(NS,'FeedBack',FeedBackId);
-                                            
-                                            FeedBack.FeedBackId = FeedBackId;
-                                            FeedBack.Petition = InputData.Petition;
-                                            FeedBack.GovernEmployee = InputData.GovernEmployee;
-                                            FeedBack.Comments = InputData.Comments;
-                                            FeedBack.Acceptedtimestamp = InputData.timestamp;
-
-                                            // 이벤트 발생
-                                            var event = factory.newEvent(NS, "PetitionAccepted");
-                                            event.FeedBackId = FeedBackId;
-                                            event.EmployeeId = officerId;
-                                            emit(event);
-                                            //////////////////
-                                            return FeedbackRegistry.add(FeedBack);
-                                            }) 
-                                    })
-                            })
-                        })
-                    });
+    .then(function(PetitionRegistry){
+        // 특정 민원id에 해당하는 값을 가져온다
+        return PetitionRegistry.get(InputData.Petition.PetitionId)
+            .then(function(PetitionData){
+                // TRUE값으로 변경한다
+                Data = PetitionData;
+                Data.Accepted = true;
+                Data.Comments = InputData.Comments;
+                Data.GovernEmployee = InputData.GovernEmployee;
+                Data.Acceptedtimestamp = InputData.timestamp; // 함수 실행시점의 timestamp
+                // 변경한 값을 AssetRegistry에 다시 저장한다.
+                return getAssetRegistry("org.petition.prov.petition.Petition")
+                .then(function(UpDatedDataset){
+                    
+                    return UpDatedDataset.update(Data);
+                    })
+                });
             });
     };
+//                 .then(function(){
+
+//                     // GovernEmployee Participant 정보를 받아온다
+//                     return getParticipantRegistry("org.petition.prov.participants.GovernEmployee")
+//                     .then(function(ParticipantRegistry){
+
+//                         // input으로 받은 GovernEmployee의 EmployeeId를 빼낸다
+//                         return ParticipantRegistry.get(InputData.GovernEmployee.EmployeeId)
+//                             .then(function(GovernEmployee){
+
+//                                 // EmployeeId를 officerId에 저장한다.
+//                                 var officerId = GovernEmployee.EmployeeId;
+
+//                                 // 이제 FeedBack asset에 업데이트한다
+//                                 return getAssetRegistry("org.petition.prov.petition.FeedBack")
+//                                     .then(function(FeedbackRegistry){
+//                                         var factory = getFactory();
+//                                         var NS =  'org.petition.prov.petition'; // Namespace
+//                                         var timeNow = InputData.timestamp;
+//                                         var FeedBackId = String(officerId)+'-'+String(timeNow); 
+                                        
+//                                         var FeedBack = factory.newResource(NS,'FeedBack',FeedBackId);
+                                        
+//                                         FeedBack.FeedBackId = FeedBackId;
+//                                         FeedBack.Petition = InputData.Petition;
+//                                         FeedBack.GovernEmployee = InputData.GovernEmployee;
+//                                         FeedBack.Comments = InputData.Comments;
+//                                         FeedBack.Acceptedtimestamp = InputData.timestamp;
+
+//                                         // 이벤트 발생
+//                                         var event = factory.newEvent(NS, "PetitionAccepted");
+//                                         event.FeedBackId = FeedBackId;
+//                                         event.EmployeeId = officerId;
+//                                         emit(event);
+//                                         //////////////////
+//                                         return FeedbackRegistry.add(FeedBack);
+//                                         }) 
+//                                 })
+//                         })
+//                     })
+//                 });
+//         });
+// };
 /**
  * ResolvePetition
  * @param {org.petition.prov.petition.ResolvePetition} InputData
@@ -272,6 +280,10 @@ function ResolvePetition(InputData) {
                 // TRUE값으로 변경한다
                 Data = PetitionData;
                 Data.Resolved = true;
+                Data.BusComments = InputData.BusComments;
+                Data.BusDriverName = InputData.BusDriverName;
+                Data.Resolvedtimestamp = InputData.timestamp;
+
                 // 변경한 값을 AssetRegistry에 다시 저장한다.
                 return getAssetRegistry("org.petition.prov.petition.Petition")
                 .then(function(UpDatedDataset){
@@ -280,48 +292,48 @@ function ResolvePetition(InputData) {
                     })
 
                 // 여기까지 해서 Petition 값 설정 완료. 이제는 Feedback asset 값을 설정한다.
-                .then(function(){
+                // .then(function(){
 
-                    // BusCompany 정보를 받아온다
-                    return getParticipantRegistry("org.petition.prov.participants.BusCompany")
-                    .then(function(ParticipantRegistry){
+                //     // BusCompany 정보를 받아온다
+                //     return getParticipantRegistry("org.petition.prov.participants.BusCompany")
+                //     .then(function(ParticipantRegistry){
 
-                        // input으로 받은 BusCompany의 Number를 빼낸다
-                        return ParticipantRegistry.get(InputData.BusCompany.BusCompanyNumber)
-                            .then(function(BusCompany){
+                //         // input으로 받은 BusCompany의 Number를 빼낸다
+                //         return ParticipantRegistry.get(InputData.BusCompany.BusCompanyNumber)
+                //             .then(function(BusCompany){
 
-                                // 필요한 값들을 저장한다.
-                                var BusCompanyName = BusCompany.BusCompanyName;
-                                // var BusDriverId = BusCompany.BusDriver.DriverId;
-                                // var BusDriverName = BusCompany.BusDriver.DriverName;
-                                // 이제 FeedBack asset에 업데이트한다
-                                return getAssetRegistry("org.petition.prov.petition.FeedBack")
-                                    .then(function(FeedbackRegistry){
-                                        return FeedbackRegistry.get(InputData.FeedBack.FeedBackId)
-                                            .then(function(FeedBackData){
-                                                var factory = getFactory();
-                                                var NS =  'org.petition.prov.petition'; // Namespace
-                                                Data = FeedBackData;
-                                                Data.BusComments = InputData.BusComments;
-                                                Data.Resolvedtimestamp = InputData.timestamp;
-                                                Data.BusCompany = InputData.BusCompany;
+                //                 // 필요한 값들을 저장한다.
+                //                 var BusCompanyName = BusCompany.BusCompanyName;
+                //                 // var BusDriverId = BusCompany.BusDriver.DriverId;
+                //                 // var BusDriverName = BusCompany.BusDriver.DriverName;
+                //                 // 이제 FeedBack asset에 업데이트한다
+                //                 return getAssetRegistry("org.petition.prov.petition.FeedBack")
+                //                     .then(function(FeedbackRegistry){
+                //                         return FeedbackRegistry.get(InputData.FeedBack.FeedBackId)
+                //                             .then(function(FeedBackData){
+                //                                 var factory = getFactory();
+                //                                 var NS =  'org.petition.prov.petition'; // Namespace
+                //                                 Data = FeedBackData;
+                //                                 Data.BusComments = InputData.BusComments;
+                //                                 Data.Resolvedtimestamp = InputData.timestamp;
+                //                                 Data.BusCompany = InputData.BusCompany;
                                                 
-                                                // optional 값들. 버스회사의 피드백에 넣어도 되고 아니어도 되는 것들
-                                                Data.BusDriverName = InputData.BusDriverName;
-                                                Data.BusDriverId = InputData.BusDriverId;
+                //                                 // optional 값들. 버스회사의 피드백에 넣어도 되고 아니어도 되는 것들
+                //                                 Data.BusDriverName = InputData.BusDriverName;
+                //                                 Data.BusDriverId = InputData.BusDriverId;
 
-                                                // 이벤트 발생
-                                                var event = factory.newEvent(NS, "PetitionResolved");
-                                                event.FeedBackId = Data.FeedBackId;
-                                                event.BusCompanyName = BusCompanyName;
-                                                emit(event);
-                                                //////////////////
-                                                return FeedbackRegistry.update(Data)
-                                            });
-                                        }) 
-                                })
-                        })
-                    })
+                //                                 // 이벤트 발생
+                //                                 var event = factory.newEvent(NS, "PetitionResolved");
+                //                                 event.FeedBackId = Data.FeedBackId;
+                //                                 event.BusCompanyName = BusCompanyName;
+                //                                 emit(event);
+                //                                 //////////////////
+                //                                 return FeedbackRegistry.update(Data)
+                //                             });
+                //                         }) 
+                //                 })
+                //         })
+                //     })
                 });
         });
 };

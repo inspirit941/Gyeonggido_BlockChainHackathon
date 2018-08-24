@@ -37,24 +37,36 @@ asset Petition identified by PetitionId{
   o String BusCompany optional // 회사명을 알고 있다면 적을 수 있도록
   o String DriverName optional // 버스기사 이름을 알고 있다면 적을 수 있도록.
   o Boolean isCash optional  // 요금 민원에서 현금인지 카드인지
+  
+  --> GovernEmployee GovernEmployee optional
+
   o Boolean Accepted default = false
   o Boolean Resolved default = false // 관할 공무원이 민원 해결했을 경우 TRUE로 바꾸는 영역.
   o Integer Rating optional // 1,2,3,4,5 scale 5개.
   o DateTime timestamp
+
+
+  o String Comments optional
+  
+  o DateTime Acceptedtimestamp optional
+  o DateTime Resolvedtimestamp optional
+  
+  o String BusComments optional
+  o String BusDriverName optional
 }
 
-asset FeedBack identified by FeedBackId{
-  --> GovernEmployee GovernEmployee
-  o String FeedBackId
-  --> Petition Petition
-  o String Comments // 접수처리완료 등의 사항 전달.
-  o String BusComments optional
-  o DateTime Acceptedtimestamp
-  o DateTime Resolvedtimestamp optional
-  --> BusCompany BusCompany optional
-  o String BusDriverName optional
-  o String BusDriverId optional
-}
+// asset FeedBack identified by FeedBackId{
+//   --> GovernEmployee GovernEmployee
+//   o String FeedBackId
+//   --> Petition Petition
+//   o String Comments // 접수처리완료 등의 사항 전달.
+//   o String BusComments optional
+//   o DateTime Acceptedtimestamp
+//   o DateTime Resolvedtimestamp optional
+//   --> BusCompany BusCompany optional
+//   o String BusDriverName optional
+//   o String BusDriverId optional
+// }
 
 
 
@@ -111,27 +123,26 @@ transaction AcceptPetition{
   o String Comments // 접수처리완료 등의 사항 전달.
 }
 // 접수 완료 시 발생되는 이벤트
-event PetitionAccepted{
-  o String FeedBackId
-  o String EmployeeId
-}
+// event PetitionAccepted{
+//   o String FeedBackId
+//   o String EmployeeId
+// }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 // 민원이 해결되었다는 걸 알리는 transaction.
 transaction ResolvePetition {
   --> Petition Petition
-  --> BusCompany BusCompany
-  --> FeedBack FeedBack
+  // --> BusCompany BusCompany
   o String BusComments
   o String BusDriverName optional
-  o String BusDriverId optional
+  // o String BusDriverId optional
 }
 
-event PetitionResolved{
-  o String FeedBackId
-  o String BusCompanyName
-}
+// event PetitionResolved{
+//   o String FeedBackId
+//   o String BusCompanyName
+// }
 
 
 // participant Department identified by DepartmentId {
