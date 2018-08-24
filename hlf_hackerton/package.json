@@ -1,9 +1,9 @@
 {
   "engines": {
-    "composer": "^0.19.13"
+    "composer": "^0.20.0"
   },
   "name": "hlf_hackerton",
-  "version": "0.0.1",
+  "version": "0.0.7",
   "description": "hlf_hackerton project",
   "scripts": {
     "prepublish": "mkdirp ./dist && composer archive create --sourceType dir --sourceName . -a ./dist/hlf_hackerton.bna",
@@ -15,16 +15,16 @@
     "composer",
     "composer-network"
   ],
-  "author": "inspirit941",
-  "email": "inspirit941@gmail.com",
+  "author": "inspirit941, silvermist152",
+  "email": "inspirit941@gmail.com, resetarsi@gmail.com",
   "license": "Apache-2.0",
   "devDependencies": {
-    "composer-admin": "^0.19.13",
-    "composer-cli": "^0.19.13",
-    "composer-client": "^0.19.13",
-    "composer-common": "^0.19.13",
-    "composer-connector-embedded": "^0.19.13",
-    "composer-cucumber-steps": "^0.19.13",
+    "composer-admin": "^0.20.0",
+    "composer-cli": "^0.20.0",
+    "composer-client": "^0.20.0",
+    "composer-common": "^0.20.0",
+    "composer-connector-embedded": "^0.20.0",
+    "composer-cucumber-steps": "^0.20.0",
     "chai": "latest",
     "chai-as-promised": "latest",
     "cucumber": "^2.2.0",

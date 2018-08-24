@@ -1,0 +1,45 @@
+query AllPetitions {
+  description: "Returns all petitions in the registry"
+  statement:
+    SELECT org.petition.prov.petition.Petition
+}
+
+query AllCivils {
+  description: "Returns all civils in the registry"
+  statement:
+    SELECT org.petition.prov.participants.Civil
+}
+
+query ResolvedPetitions {
+  description: "Returns resolved petitions in the registry"
+  statement:
+    SELECT org.petition.prov.petition.Petition
+      WHERE (Resolved == true)
+}
+
+query PetitionsByCivilId {
+  description: "Returns Civil's petitions in the registry"
+  statement:
+    SELECT org.petition.prov.petition.Petition
+      WHERE (Civil == _$CivilIdInput) //현재 문제 있음
+}
+
+query PetitionsByBusNo {
+  description: "Returns Petitions by Bus No"
+  statement:
+    SELECT org.petition.prov.petition.Petition
+      WHERE (BusNumber == _$BusNoInput)
+}
+
+query AllBusCompanies {
+  description: "Returns all assets in the registry"
+  statement:
+    SELECT org.petition.prov.participants.BusCompany
+}
+
+query CompanyByName {
+  description: "Returns BusCompany by it's name"
+  statement:
+    SELECT org.petition.prov.participants.BusCompany
+      WHERE (BusCompanyName == _$nameInput)
+}
