@@ -21,7 +21,7 @@ query PetitionsByCivilId {
   description: "Returns Civil's petitions in the registry"
   statement:
     SELECT org.petition.prov.petition.Petition
-      WHERE (Civil == _$CivilIdInput) //현재 문제 있음
+      WHERE (CivilId == _$CivilIdInput) 
 }
 
 query PetitionsByBusNo {
@@ -30,7 +30,12 @@ query PetitionsByBusNo {
     SELECT org.petition.prov.petition.Petition
       WHERE (BusNumber == _$BusNoInput)
 }
-
+query PetitionByType{
+  description: "Return Petition by Type"
+  statement:
+    SELECT org.petition.prov.petition.Petition
+      WHERE (Type == _$TypeInput)
+}
 query AllBusCompanies {
   description: "Returns all assets in the registry"
   statement:

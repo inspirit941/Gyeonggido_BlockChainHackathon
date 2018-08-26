@@ -67,7 +67,7 @@ function NonstopCreate(PetitionData){
         petition.BusNumber = PetitionData.BusNumber;
         petition.VehicleId = PetitionData.VehicleId;
         petition.Time = PetitionData.Time;
-
+        petition.Type = PetitionData.Type;
         petition.Content = PetitionData.Content;
         petition.timestamp = PetitionData.timestamp
         // 이벤트 발동
@@ -106,7 +106,7 @@ function ImpoliteCreate(PetitionData){
         petition.BusNumber = PetitionData.BusNumber;
         petition.VehicleId = PetitionData.VehicleId;
         petition.Time = PetitionData.Time;
-
+        petition.Type = PetitionData.Type;
         petition.Content = PetitionData.Content;
         petition.timestamp = PetitionData.timestamp
         // 이벤트 발동
@@ -140,7 +140,7 @@ function IntervalCreate(PetitionData){
         petition.location = PetitionData.location;
         petition.BusNumber = PetitionData.BusNumber;
         petition.Time = PetitionData.Time;
-
+        petition.Type = PetitionData.Type;
         petition.Content = PetitionData.Content;
         petition.timestamp = PetitionData.timestamp
         // 이벤트 발동
@@ -178,7 +178,7 @@ function FeeCreate(PetitionData){
         petition.BusNumber = PetitionData.BusNumber;
         petition.VehicleId = PetitionData.VehicleId;
         petition.Time = PetitionData.Time;
-        
+        petition.Type = PetitionData.Type;
         petition.Content = PetitionData.Content;
         petition.timestamp = PetitionData.timestamp
         // 이벤트 발동
