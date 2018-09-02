@@ -1,9 +1,6 @@
-# hlf_hackerton
+# 경기도블록체인해커톤 'Hyperledger fabric 기반 버스 민원처리 시스템'
 
-hlf_hackerton project
 
-크게 두가지 namespace - petition, participant
-// 근데 왜 다 prov 밑에 있지..
 
 
 
@@ -44,7 +41,7 @@ hlf_hackerton project
 참여자: 
 
 1. 본부(Headquarter)
-- 고유값 도번호를 갖고, 도이름을 가짐.
+- 고유값 도번호를 갖고, 도이름을 가짐. '경기도청'의 개념
 
 2. 민원부서(PetitionDepartment)
 - 고유값 참여키를 가짐. 부서코드가 있다네
