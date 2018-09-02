@@ -1,6 +1,3 @@
-
-
-
 # Hyperledger Fabric
 
 - Part of a course on Hyperledger Fabric by http://ACloudFan.com / raj@acloudfan.com
@@ -51,8 +48,9 @@ asset Petition identified by PetitionId{
 ## Participant
 
 ```
+// 정부 측 정의
 participant headquarter identified by Province{
-  o String Province default = "64100000" // 경기도청. 이 participant에는 admin 권한에 필적하는 걸 줄 생각.
+  o String Province default = "64100000" // 경기도청.
   o String Name default = "경기도"
 }
 
@@ -71,6 +69,7 @@ participant GovernEmployee identified by Name {
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 시민 정의
 
 participant Civil identified by CivilId{
   o String CivilId
@@ -88,13 +87,13 @@ transaction CreateCivil{
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
-
+// 버스회사 정의
 participant BusCompany identified by BusCompanyNumber {
   o String BusCompanyNumber //regex=/031-(\d{3}|\d{4})-\d{4}/
   // 사업자등록번호를 쓰려 했는데 경기도버스운송조합 홈페이지를 가보니 사업자번호가 없다. 대신 회사 전화번호를 사용함
   o String BusCompanyName // 버스회사 이름
   o String[] BusRouteNumber // 회사가 소유한 버스 노선번호
-  o String[] ServiceDistrict // 버스가 지나는 구역. 근데 이걸 알 수 있는 방법이 마땅치 않다. 모든 노선을 지도에 넣어서 어느 시를 통과하는지 일일이 찾아낼 수도 없고 말이지...
+  o String[] ServiceDistrict // 버스가 서비스하는 지역
 }
 
 participant BusDriver identified by DriverId{
@@ -104,3 +103,97 @@ participant BusDriver identified by DriverId{
 }
 
 ```
+## Transaction
+
+```
+
+transaction CreateCivil{
+  o String CivilId
+  o CivilDetail CivilDetail
+}
+
+transaction NonstopCreate {
+  // --> Civil Civil
+  o String CivilId
+  o String location // 발생 위치. 무슨 정류장이라던지, 어느 사거리라던지.
+  o String BusStopName // 버스정류장 이름. (알아서 적어넣는 거)
+  o String BusNumber // 버스번호. 100-1 같은 숫자가 있어 string으로 처리해야 함
+  o String VehicleId
+  o DateTime Time // 사건 발생 시간.
+  o String Content // 구체적인 내용.
+  o String Type default = '무정차'
+}
+
+transaction ImpoliteCreate{
+    // --> Civil Civil
+  o String CivilId
+  o String location // 발생 위치. 무슨 정류장이라던지, 어느 사거리라던지.
+  o String DriverName optional // 버스기사 이름을 알고 있다면 적을 수 있도록.
+  o String BusNumber // 버스번호. 100-1 같은 숫자가 있어 string으로 처리해야 함
+  o String VehicleId // 차량번호
+  o DateTime Time // 사건 발생 시간.
+  o String Content // 구체적인 내용.
+  o String Type default = "불친절"
+}
+transaction IntervalCreate{
+    // --> Civil Civil
+  o String CivilId
+  o String location // 발생 위치. 무슨 정류장이라던지, 어느 사거리라던지.
+  o String BusNumber // 버스번호. 100-1 같은 숫자가 있어 string으로 처리해야 함
+  o DateTime Time // 사건 발생 시간.
+  o String Content // 구체적인 내용.
+  o String Type default = "배차간격"
+}
+transaction FeeCreate{
+    // --> Civil Civil
+  o String CivilId
+  o Boolean isCash
+  o String location // 발생 위치. 무슨 정류장이라던지, 어느 사거리라던지.
+  o String DriverName optional // 버스기사 이름을 알고 있다면 적을 수 있도록.
+  o String BusNumber // 버스번호. 100-1 같은 숫자가 있어 string으로 처리해야 함
+  o String VehicleId // 차량번호
+  o DateTime Time // 사건 발생 시간.
+  o String Content // 구체적인 내용.
+  o String Type default = "요금"
+}
+
+event PetitionCreated{
+  o String PetitionId
+  o String CivilId
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////
+// 관할 공무원의 접수 완료
+transaction AcceptPetition{
+  // --> GovernEmployee GovernEmployee
+  o String GovernEmployee
+  --> Petition Petition
+  o String Comments // 접수처리완료 등의 사항 전달.
+}
+// 접수 완료 시 발생되는 이벤트
+// event PetitionAccepted{
+//   o String FeedBackId
+//   o String EmployeeId
+// }
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+// 민원이 해결되었다는 걸 알리는 transaction.
+transaction ResolvePetition {
+  --> Petition Petition
+
+  // --> BusCompany BusCompany
+  o String BusComments
+  o String BusDriverName optional
+  // o String BusDriverId optional
+}
+
+// event PetitionResolved{
+//   o String FeedBackId
+//   o String BusCompanyName
+// }
+
+```
+
+ChainCode는 hlf_hackerton 폴더 안의 lib/logic.js에서 확인할 수 있습니다.
+
