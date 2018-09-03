@@ -197,3 +197,6 @@ transaction ResolvePetition {
 
 ChainCode는 hlf_hackerton 폴더 안의 lib/logic.js에서 확인할 수 있습니다.
 
+Composer-rest-server 결과물
+
+<center>![k-328](https://user-images.githubusercontent.com/26548454/44966163-8a877380-af74-11e8-8c1e-1ee0739af54b.jpg)</center>
