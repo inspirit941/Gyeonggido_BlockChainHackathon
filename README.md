@@ -200,3 +200,12 @@ ChainCode는 hlf_hackerton 폴더 안의 lib/logic.js에서 확인할 수 있습
 Composer-rest-server
 
 ![k-328](https://user-images.githubusercontent.com/26548454/44966163-8a877380-af74-11e8-8c1e-1ee0739af54b.jpg)
+
+
+## Front-End (React Native)
+프론트엔드에서 클라이언트는 앱으로 제작하였으며, React Native를 바탕으로 Composer REST API를 연동하였습니다.
+
+| Intro Page      | Main Menu     | Select Page      |
+| -------------- | ------------------- | ---------------- |
+|![ddd](./frontend/components/img/launch.jpeg)|![ddd](./frontend/components/img/main.png) | ![ddd](./frontend/components/img/petition.jpeg)|
+
